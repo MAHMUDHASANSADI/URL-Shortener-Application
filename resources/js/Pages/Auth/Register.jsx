@@ -1,6 +1,7 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -24,6 +25,13 @@ export default function Register() {
     return (
         <GuestLayout>
             <Head title="Register" />
+
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
+                <p className="mt-1 text-sm text-gray-600">
+                    Join us to start shortening your URLs.
+                </p>
+            </div>
 
             <form onSubmit={submit}>
                 <div>
@@ -102,17 +110,22 @@ export default function Register() {
                     />
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
+                <div className="mt-6 flex items-center justify-between">
                     <Link
                         href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="rounded-md text-sm text-gray-600 hover:text-gray-900 focus:outline-none"
                     >
-                        Already registered?
+                        Already have an account?
                     </Link>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
+                    <div className="flex items-center gap-3">
+                        <Link href={route('login')}>
+                            <SecondaryButton type="button">Login</SecondaryButton>
+                        </Link>
+                        <PrimaryButton disabled={processing}>
+                            Register
+                        </PrimaryButton>
+                    </div>
                 </div>
             </form>
         </GuestLayout>

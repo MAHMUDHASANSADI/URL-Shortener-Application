@@ -7,18 +7,32 @@ import {
     Modal,
     Form,
     message,
-    Popconfirm
+    Popconfirm,
+    Tooltip,
+    Space,
+    Typography,
+    Card
 } from 'antd';
+
+import {
+    EditOutlined,
+    DeleteOutlined,
+    CopyOutlined,
+    LinkOutlined,
+    RocketOutlined
+} from '@ant-design/icons';
+
+const { Text } = Typography;
 
 import { useState } from 'react';
 
 export default function Dashboard({ auth, urls }) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | Create URL Form
-    |--------------------------------------------------------------------------
-    */
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        message.success('Copied to clipboard!');
+    };
+
 
     const { data, setData, post, processing, reset, errors } = useForm({
         original_url: '',
@@ -35,11 +49,6 @@ export default function Dashboard({ auth, urls }) {
         });
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | Edit Modal
-    |--------------------------------------------------------------------------
-    */
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUrl, setEditingUrl] = useState(null);
@@ -69,11 +78,6 @@ export default function Dashboard({ auth, urls }) {
         });
     };
 
-    /*
-    |--------------------------------------------------------------------------
-    | Delete URL
-    |--------------------------------------------------------------------------
-    */
 
     const handleDelete = (id) => {
         router.delete(route('urls.destroy', id), {
@@ -82,12 +86,6 @@ export default function Dashboard({ auth, urls }) {
             }
         });
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | Table Columns
-    |--------------------------------------------------------------------------
-    */
 
     const columns = [
         {
@@ -104,13 +102,21 @@ export default function Dashboard({ auth, urls }) {
             title: 'Short URL',
             key: 'short_url',
             render: (_, record) => {
-
                 const shortUrl = `${window.location.origin}/s/${record.short_code}`;
-
                 return (
-                    <a href={shortUrl} target="_blank">
-                        {shortUrl}
-                    </a>
+                    <Space>
+                        <a href={shortUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-900">
+                            {shortUrl}
+                        </a>
+                        <Tooltip title="Copy URL">
+                            <Button
+                                size="small"
+                                type="text"
+                                icon={<CopyOutlined />}
+                                onClick={() => copyToClipboard(shortUrl)}
+                            />
+                        </Tooltip>
+                    </Space>
                 );
             }
         },
@@ -118,33 +124,33 @@ export default function Dashboard({ auth, urls }) {
             title: 'Created',
             dataIndex: 'created_at',
             key: 'created_at',
+            render: (date) => new Date(date).toLocaleDateString()
         },
         {
             title: 'Actions',
             key: 'actions',
             render: (_, record) => (
-                <div className="flex gap-2">
-
-                    <Button
-                        type="primary"
-                        onClick={() => openEditModal(record)}
-                    >
-                        Edit
-                    </Button>
+                <Space size="middle">
+                    <Tooltip title="Edit">
+                        <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            onClick={() => openEditModal(record)}
+                        />
+                    </Tooltip>
 
                     <Popconfirm
                         title="Delete URL"
-                        description="Are you sure?"
+                        description="Are you sure you want to delete this URL?"
                         onConfirm={() => handleDelete(record.id)}
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button danger>
-                            Delete
-                        </Button>
+                        <Tooltip title="Delete">
+                            <Button danger icon={<DeleteOutlined />} />
+                        </Tooltip>
                     </Popconfirm>
-
-                </div>
+                </Space>
             )
         }
     ];
@@ -165,17 +171,16 @@ export default function Dashboard({ auth, urls }) {
 
                     <div className="bg-white p-6 rounded-lg shadow">
 
-                        {/* Create Form */}
-
+                    <Card className="mb-8 shadow-sm border-0 bg-gray-50">
                         <form
                             onSubmit={submit}
-                            className="flex gap-4 mb-8"
+                            className="flex gap-4"
                         >
-
                             <div className="w-full">
                                 <Input
                                     size="large"
-                                    placeholder="Enter your long URL"
+                                    prefix={<LinkOutlined className="text-gray-400" />}
+                                    placeholder="Enter your long URL (e.g. https://google.com)"
                                     value={data.original_url}
                                     onChange={(e) =>
                                         setData('original_url', e.target.value)
@@ -192,13 +197,14 @@ export default function Dashboard({ auth, urls }) {
                             <Button
                                 type="primary"
                                 size="large"
+                                icon={<RocketOutlined />}
                                 htmlType="submit"
                                 loading={processing}
                             >
-                                Shorten
+                                Shorten Now
                             </Button>
-
                         </form>
+                    </Card>
 
                         {/* Table */}
 

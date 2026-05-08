@@ -2,6 +2,7 @@ import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -30,6 +31,13 @@ export default function Login({ status, canResetPassword }) {
                     {status}
                 </div>
             )}
+
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Welcome Back</h2>
+                <p className="mt-1 text-sm text-gray-600">
+                    Please enter your details to sign in.
+                </p>
+            </div>
 
             <form onSubmit={submit}>
                 <div>
@@ -80,19 +88,24 @@ export default function Login({ status, canResetPassword }) {
                     </label>
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
+                <div className="mt-6 flex items-center justify-between">
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            className="rounded-md text-sm text-gray-600 hover:text-gray-900 focus:outline-none"
                         >
-                            Forgot your password?
+                            Forgot password?
                         </Link>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    <div className="flex items-center gap-3">
+                        <Link href={route('register')}>
+                            <SecondaryButton type="button">Register</SecondaryButton>
+                        </Link>
+                        <PrimaryButton disabled={processing}>
+                            Log in
+                        </PrimaryButton>
+                    </div>
                 </div>
             </form>
         </GuestLayout>
