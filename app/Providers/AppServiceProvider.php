@@ -4,15 +4,17 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Interfaces\UrlRepositoryInterface;
+use App\Repositories\UrlRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register(): void
+    public function register()
     {
-        //
+        $this->app->bind(UrlRepositoryInterface::class, UrlRepository::class);
     }
 
     /**
