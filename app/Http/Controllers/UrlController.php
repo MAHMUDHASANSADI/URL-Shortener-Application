@@ -13,7 +13,6 @@ class UrlController extends Controller
 
     public function __construct(UrlRepositoryInterface $urlRepo)
     {
-        $this->middleware('auth');
         $this->urlRepo = $urlRepo;
     }
 

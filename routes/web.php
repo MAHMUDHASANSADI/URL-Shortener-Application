@@ -47,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('profile.destroy');
 });
 
-Route::get('/{code}', [RedirectController::class, 'handle'])
+Route::get('/s/{code}', [RedirectController::class, 'handle'])
     ->name('short.redirect');
 
 require __DIR__ . '/auth.php';

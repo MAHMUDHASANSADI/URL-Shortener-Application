@@ -24,14 +24,19 @@ class UrlRepository implements UrlRepositoryInterface
 
     public function update($id, array $data)
     {
-        $url = Url::findOrFail($id);
+        $url = Url::where('user_id', auth()->id())
+            ->findOrFail($id);
+
         $url->update($data);
+
         return $url;
     }
 
     public function delete($id)
     {
-        $url = Url::findOrFail($id);
+        $url = Url::where('user_id', auth()->id())
+            ->findOrFail($id);
+
         return $url->delete();
     }
 }
