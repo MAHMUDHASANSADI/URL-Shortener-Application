@@ -271,8 +271,19 @@ export default function Dashboard({ auth, urls }) {
 
                         <Table
                             columns={columns}
-                            dataSource={urls}
+                            dataSource={urls.data}
                             rowKey="id"
+                            pagination={{
+                                current: urls.current_page,
+                                pageSize: urls.per_page,
+                                total: urls.total,
+                                onChange: (page) => {
+                                    router.get(route('dashboard'), { page }, {
+                                        preserveState: true,
+                                        replace: true
+                                    });
+                                }
+                            }}
                         />
 
                     </div>

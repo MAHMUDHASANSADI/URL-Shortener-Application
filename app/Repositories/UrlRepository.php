@@ -14,7 +14,7 @@ class UrlRepository implements UrlRepositoryInterface
 
     public function getByUser($userId)
     {
-        return Url::where('user_id', $userId)->latest()->get();
+        return Url::where('user_id', $userId)->latest()->paginate(10);
     }
 
     public function findByShortCode($code)
