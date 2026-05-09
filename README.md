@@ -1,59 +1,235 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# URL Shortener Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-stack URL shortening application built with Laravel, React, Inertia.js, Tailwind CSS, and Ant Design.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Authentication
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* User registration
+* User login/logout
+* Protected dashboard routes
 
-## Learning Laravel
+## URL Management
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* Create shortened URLs
+* Generate unique short codes
+* Custom short code support
+* Edit existing URLs
+* Delete URLs
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## URL Redirection
 
-## Laravel Sponsors
+* Redirect shortened URLs to original URLs
+* Expiration date support for links
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Dashboard
 
-### Premium Partners
+* View all shortened URLs
+* Display:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+  * Original URL
+  * Short URL
+  * Created date
+  * Expiration date
+  * Click count / analytics
 
-## Contributing
+## Analytics & Tracking
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Click tracking
+* URL analytics support
+* Track total visits per shortened URL
 
-## Code of Conduct
+## Extra Features
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Copy-to-clipboard functionality
+* Pagination support
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Tech Stack
 
-## License
+## Backend
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* Laravel 12
+* MySQL
+* Repository Pattern
+
+## Frontend
+
+* React.js
+* Inertia.js
+* Tailwind CSS
+* Ant Design
+
+## Development Tools
+
+* Vite
+* Composer
+* NPM
+
+---
+
+# Architecture Overview
+
+The application follows a monolithic full-stack architecture using Laravel and Inertia.js.
+
+## Backend Structure
+
+* MVC Architecture
+* Repository Pattern for data access abstraction
+* Form validation using Laravel validation system
+
+## Frontend Structure
+
+* React components with Inertia.js
+* Ant Design components for UI
+* Tailwind CSS for layout and styling
+
+---
+
+# Database Design
+
+## users Table
+
+Stores authenticated users.
+
+## urls Table
+
+Stores shortened URLs and analytics-related information.
+
+### Main Fields
+
+* original_url
+* short_code
+* click_count
+* expires_at
+
+### Relationship
+
+* One user can have many URLs
+* Each URL belongs to one user
+
+---
+
+# Assumptions Made
+
+* Authentication is required to manage URLs
+* Short URLs use the `/s/{code}` format to avoid route conflicts
+* Expired links should no longer redirect
+* Custom short codes must remain unique
+* Analytics are based on total click count tracking
+
+---
+
+# Project Setup Instructions
+
+## 1. Clone Repository
+
+```bash id="rnp9g4"
+git clone <repository-url>
+cd url-shortener
+```
+
+---
+
+## 2. Install PHP Dependencies
+
+```bash id="zv5f2n"
+composer install
+```
+
+---
+
+## 3. Install Node Dependencies
+
+```bash id="t4hjlwm"
+npm install
+```
+
+---
+
+## 4. Configure Environment
+
+Copy `.env.example`:
+
+```bash id="y0nt4q"
+cp .env.example .env
+```
+
+Update database credentials in `.env`:
+
+```env id="xg6s8x"
+DB_DATABASE=url_shortener
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+## 5. Generate Application Key
+
+```bash id="l6qb0m"
+php artisan key:generate
+```
+
+---
+
+## 6. Run Database Migration
+
+```bash id="j0lq9x"
+php artisan migrate
+```
+
+---
+
+# How to Run the Project
+
+## Terminal 1 — Start Laravel Server
+
+```bash id="9h6x8j"
+php artisan serve
+```
+
+---
+
+## Terminal 2 — Start Vite Server
+
+```bash id="epr6b8"
+npm run dev
+```
+
+---
+
+# Access Application
+
+Open in browser:
+
+```plaintext id="u9e3wj"
+http://127.0.0.1:8000
+```
+
+---
+
+# Default Application Flow
+
+1. Register/Login
+2. Access dashboard
+3. Create shortened URL
+4. Manage URLs
+5. Copy and share short URL
+6. Track analytics and clicks
+
+---
+
+# Security Considerations
+
+* Authentication middleware protection
+* User-specific URL ownership validation
+* Input validation for URLs
+* Unique short code validation
+* Expiration validation for links
+
+---
