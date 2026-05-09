@@ -28,18 +28,24 @@ class UrlController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'original_url' => 'required|url'
+            'original_url' => 'required|url',
+            'custom_code' => 'nullable|string|min:3|max:20|unique:urls,short_code',
+            'expires_at' => 'nullable|date|after:now'
         ]);
 
-        // Generate unique short code
-        do {
-            $code = Str::random(6);
-        } while ($this->urlRepo->findByShortCode($code));
+        $code = $request->custom_code;
+
+        if (!$code) {
+            do {
+                $code = Str::random(6);
+            } while ($this->urlRepo->findByShortCode($code));
+        }
 
         $this->urlRepo->create([
             'user_id' => auth()->id(),
             'original_url' => $request->original_url,
-            'short_code' => $code
+            'short_code' => $code,
+            'expires_at' => $request->expires_at
         ]);
 
         return redirect()->back();
@@ -48,11 +54,13 @@ class UrlController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'original_url' => 'required|url'
+            'original_url' => 'required|url',
+            'expires_at' => 'nullable|date|after:now'
         ]);
 
         $this->urlRepo->update($id, [
-            'original_url' => $request->original_url
+            'original_url' => $request->original_url,
+            'expires_at' => $request->expires_at
         ]);
 
         return redirect()->back();

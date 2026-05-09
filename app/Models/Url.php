@@ -15,6 +15,12 @@ class Url extends Model
         'user_id',
         'original_url',
         'short_code',
+        'clicks',
+        'expires_at',
+    ];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
     ];
 
     public function user()

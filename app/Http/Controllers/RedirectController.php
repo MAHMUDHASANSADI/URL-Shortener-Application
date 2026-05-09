@@ -21,6 +21,14 @@ class RedirectController extends Controller
             abort(404);
         }
 
+        // Check for expiration
+        if ($url->expires_at && $url->expires_at->isPast()) {
+            abort(410, 'This link has expired.');
+        }
+
+        // Increment clicks
+        $this->urlRepo->incrementClicks($url->id);
+
         return redirect()->to($url->original_url);
     }
 }

@@ -11,7 +11,10 @@ import {
     Tooltip,
     Space,
     Typography,
-    Card
+    Card,
+    DatePicker,
+    Badge,
+    Tag
 } from 'antd';
 
 import {
@@ -25,6 +28,7 @@ import {
 const { Text } = Typography;
 
 import { useState } from 'react';
+import dayjs from 'dayjs';
 
 export default function Dashboard({ auth, urls }) {
 
@@ -36,6 +40,8 @@ export default function Dashboard({ auth, urls }) {
 
     const { data, setData, post, processing, reset, errors } = useForm({
         original_url: '',
+        custom_code: '',
+        expires_at: null,
     });
 
     const submit = (e) => {
@@ -60,6 +66,7 @@ export default function Dashboard({ auth, urls }) {
 
         editForm.setFieldsValue({
             original_url: record.original_url,
+            expires_at: record.expires_at ? dayjs(record.expires_at) : null,
         });
 
         setIsModalOpen(true);
@@ -124,7 +131,28 @@ export default function Dashboard({ auth, urls }) {
             title: 'Created',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (date) => new Date(date).toLocaleDateString()
+            render: (date) => dayjs(date).format('YYYY-MM-DD')
+        },
+        {
+            title: 'Clicks',
+            dataIndex: 'clicks',
+            key: 'clicks',
+            render: (clicks) => <Badge count={clicks} showZero color="#108ee9" />
+        },
+        {
+            title: 'Expires At',
+            dataIndex: 'expires_at',
+            key: 'expires_at',
+            render: (date) => {
+                if (!date) return <Tag color="default">Never</Tag>;
+                const isExpired = dayjs(date).isBefore(dayjs());
+                return (
+                    <Tag color={isExpired ? 'error' : 'warning'}>
+                        {dayjs(date).format('YYYY-MM-DD HH:mm')}
+                        {isExpired && ' (Expired)'}
+                    </Tag>
+                );
+            }
         },
         {
             title: 'Actions',
@@ -174,35 +202,68 @@ export default function Dashboard({ auth, urls }) {
                     <Card className="mb-8 shadow-sm border-0 bg-gray-50">
                         <form
                             onSubmit={submit}
-                            className="flex gap-4"
+                            className="flex flex-col gap-4"
                         >
-                            <div className="w-full">
-                                <Input
-                                    size="large"
-                                    prefix={<LinkOutlined className="text-gray-400" />}
-                                    placeholder="Enter your long URL (e.g. https://google.com)"
-                                    value={data.original_url}
-                                    onChange={(e) =>
-                                        setData('original_url', e.target.value)
-                                    }
-                                />
+                            <div className="flex gap-4">
+                                <div className="flex-grow">
+                                    <Input
+                                        size="large"
+                                        prefix={<LinkOutlined className="text-gray-400" />}
+                                        placeholder="Enter your long URL (e.g. https://google.com)"
+                                        value={data.original_url}
+                                        onChange={(e) =>
+                                            setData('original_url', e.target.value)
+                                        }
+                                    />
+                                    {errors.original_url && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.original_url}
+                                        </p>
+                                    )}
+                                </div>
 
-                                {errors.original_url && (
-                                    <p className="text-red-500 text-sm mt-1">
-                                        {errors.original_url}
-                                    </p>
-                                )}
+                                <Button
+                                    type="primary"
+                                    size="large"
+                                    icon={<RocketOutlined />}
+                                    htmlType="submit"
+                                    loading={processing}
+                                >
+                                    Shorten Now
+                                </Button>
                             </div>
 
-                            <Button
-                                type="primary"
-                                size="large"
-                                icon={<RocketOutlined />}
-                                htmlType="submit"
-                                loading={processing}
-                            >
-                                Shorten Now
-                            </Button>
+                            <div className="flex gap-4 items-start">
+                                <div className="flex-1">
+                                    <Input
+                                        placeholder="Custom Short Code (Optional)"
+                                        value={data.custom_code}
+                                        onChange={(e) => setData('custom_code', e.target.value)}
+                                        addonBefore={`${window.location.origin}/s/`}
+                                    />
+                                    {errors.custom_code && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.custom_code}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="flex-1">
+                                    <DatePicker
+                                        showTime
+                                        className="w-full"
+                                        placeholder="Expiration Date (Optional)"
+                                        value={data.expires_at ? dayjs(data.expires_at) : null}
+                                        onChange={(date) => setData('expires_at', date ? date.format('YYYY-MM-DD HH:mm:ss') : null)}
+                                        disabledDate={(current) => current && current < dayjs().startOf('day')}
+                                    />
+                                    {errors.expires_at && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                            {errors.expires_at}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </form>
                     </Card>
 
@@ -239,6 +300,17 @@ export default function Dashboard({ auth, urls }) {
                         ]}
                     >
                         <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Expiration Date"
+                        name="expires_at"
+                    >
+                        <DatePicker
+                            showTime
+                            className="w-full"
+                            disabledDate={(current) => current && current < dayjs().startOf('day')}
+                        />
                     </Form.Item>
 
                 </Form>

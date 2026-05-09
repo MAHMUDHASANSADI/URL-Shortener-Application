@@ -39,4 +39,9 @@ class UrlRepository implements UrlRepositoryInterface
 
         return $url->delete();
     }
+
+    public function incrementClicks($id)
+    {
+        return Url::where('id', $id)->increment('clicks');
+    }
 }
